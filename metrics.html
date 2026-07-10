@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangLoop • Metrics</title>
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="metrics.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-container" id="appContainer">
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <a href="dashboard.html" class="logo-link"><span class="logo-emoji">🌍</span><span>LangLoop</span></a>
+            <button id="sidebarToggle" class="btn-sidebar-toggle"><i class="fa-solid fa-angles-left"></i></button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html">  <i class="fa-solid fa-gauge-high"></i>       <span>Dashboard</span></a></li>
+            <li><a href="users.html">      <i class="fa-solid fa-users"></i>             <span>Users</span></a></li>
+            <li><a href="decks.html">      <i class="fa-solid fa-layer-group"></i>       <span>Decks</span></a></li>
+            <li><a href="flashcards.html"> <i class="fa-solid fa-cards-blank"></i>       <span>Flashcards</span></a></li>
+            <li><a href="sessions.html">   <i class="fa-solid fa-clock-rotate-left"></i><span>Sessions</span></a></li>
+            <li><a href="metrics.html">    <i class="fa-solid fa-chart-line"></i>        <span>Metrics</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="#" onclick="logout()" class="quick-btn" style="display:flex;align-items:center;gap:0.85rem;padding:0.9rem 1rem;border-radius:10px;border:1px solid rgba(239,68,68,0.25);background:transparent;color:var(--danger);text-decoration:none;font-size:0.88rem;font-weight:500;">
+                <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="content-area">
+        <nav class="navbar">
+            <div class="nav-left"><span class="page-display-title">Learning Metrics</span></div>
+            <div class="nav-right">
+                <div class="nav-datetime"><span id="navDate"></span><span id="navClock" class="nav-clock"></span></div>
+                <div class="nav-actions">
+                    <button class="nav-btn" id="themeToggleBtn"><i class="fa-solid fa-moon"></i></button>
+                    <button class="nav-btn"><i class="fa-solid fa-bell"></i><span class="badge-dot"></span></button>
+                </div>
+                <div class="profile-avatar-wrapper">
+                    <div id="profileAvatar" class="avatar-img">AD</div>
+                    <div id="profileDropdown" class="profile-dropdown">
+                        <div class="profile-header-info"><div class="profile-username">Admin User</div><div class="profile-role">Administrator</div></div>
+                        <a href="dashboard.html" class="dropdown-link"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                        <a href="#" onclick="logout()" class="dropdown-link logout-action"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+
+            <!-- Stat cards row -->
+            <section class="m-stats-grid">
+                <div class="m-stat-card indigo">
+                    <div class="m-stat-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                    <div id="mTotalSessions" class="m-stat-value"><span class="skeleton" style="width:50%;height:2rem;display:inline-block">&nbsp;</span></div>
+                    <div class="m-stat-label">Total Sessions</div>
+                </div>
+                <div class="m-stat-card purple">
+                    <div class="m-stat-icon"><i class="fa-solid fa-gauge-high"></i></div>
+                    <div id="mAvgScore" class="m-stat-value"><span class="skeleton" style="width:50%;height:2rem;display:inline-block">&nbsp;</span></div>
+                    <div class="m-stat-label">Avg Score</div>
+                </div>
+                <div class="m-stat-card cyan">
+                    <div class="m-stat-icon"><i class="fa-solid fa-award"></i></div>
+                    <div id="mHighScore" class="m-stat-value"><span class="skeleton" style="width:50%;height:2rem;display:inline-block">&nbsp;</span></div>
+                    <div class="m-stat-label">Highest Score</div>
+                </div>
+                <div class="m-stat-card green">
+                    <div class="m-stat-icon"><i class="fa-solid fa-user-clock"></i></div>
+                    <div id="mActiveUsers" class="m-stat-value"><span class="skeleton" style="width:50%;height:2rem;display:inline-block">&nbsp;</span></div>
+                    <div class="m-stat-label">Active Users</div>
+                </div>
+            </section>
+
+            <!-- Progress + Table -->
+            <section class="m-details-grid">
+                <div class="glass-card">
+                    <div class="card-header-area">
+                        <h2 class="card-title-lg"><i class="fa-solid fa-chart-line-up" style="color:var(--accent)"></i> Progress Overview</h2>
+                    </div>
+                    <div class="m-progress-list">
+                        <div class="m-progress-item">
+                            <div class="m-prog-info"><span>Average Ease Factor</span><span id="mEaseVal" class="m-prog-pct">—</span></div>
+                            <div class="m-prog-track"><div id="mEaseBar" class="m-prog-bar grad-cyan-indigo"></div></div>
+                        </div>
+                        <div class="m-progress-item">
+                            <div class="m-prog-info"><span>Est. Retention Rate</span><span id="mRetVal" class="m-prog-pct">—</span></div>
+                            <div class="m-prog-track"><div id="mRetBar" class="m-prog-bar grad-purple-cyan"></div></div>
+                        </div>
+                        <div class="m-progress-item">
+                            <div class="m-prog-info"><span>Perfect Sessions ≥ 90</span><span id="mPerfVal" class="m-prog-pct">—</span></div>
+                            <div class="m-prog-track"><div id="mPerfBar" class="m-prog-bar grad-indigo-purple"></div></div>
+                        </div>
+                        <div class="m-progress-item">
+                            <div class="m-prog-info"><span>Interval Optimality</span><span id="mIntVal" class="m-prog-pct">—</span></div>
+                            <div class="m-prog-track"><div id="mIntBar" class="m-prog-bar grad-emerald-cyan"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <div class="card-header-area">
+                        <h2 class="card-title-lg"><i class="fa-solid fa-clock-rotate-left" style="color:var(--secondary)"></i> Recent Performance</h2>
+                    </div>
+                    <div id="metricsLoading" style="text-align:center;padding:3rem">
+                        <div class="skeleton" style="width:100%;height:1rem;margin-bottom:0.75rem">&nbsp;</div>
+                        <div class="skeleton" style="width:80%;height:1rem;margin-bottom:0.75rem">&nbsp;</div>
+                        <div class="skeleton" style="width:90%;height:1rem">&nbsp;</div>
+                    </div>
+                    <div id="metricsEmpty" class="empty-state-card" style="display:none">
+                        <div class="empty-state-symbol">📈</div>
+                        <p class="empty-state-msg-title">No Data Available</p>
+                        <p class="empty-state-msg-desc">Log sessions to see performance metrics here.</p>
+                    </div>
+                    <div id="metricsTableWrapper" style="display:none">
+                        <div class="responsive-table-container">
+                            <table>
+                                <thead>
+                                    <tr><th>Session</th><th>User</th><th>Deck</th><th>Duration</th><th>Date</th><th>Score</th></tr>
+                                </thead>
+                                <tbody id="metricsTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+<script src="theme.js"></script>
+<script src="metrics.js"></script>
+</body>
+</html>

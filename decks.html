@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangLoop • Decks</title>
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="decks.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-container" id="appContainer">
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <a href="dashboard.html" class="logo-link"><span class="logo-emoji">🌍</span><span>LangLoop</span></a>
+            <button id="sidebarToggle" class="btn-sidebar-toggle"><i class="fa-solid fa-angles-left"></i></button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html">  <i class="fa-solid fa-gauge-high"></i>       <span>Dashboard</span></a></li>
+            <li><a href="users.html">      <i class="fa-solid fa-users"></i>             <span>Users</span></a></li>
+            <li><a href="decks.html">      <i class="fa-solid fa-layer-group"></i>       <span>Decks</span></a></li>
+            <li><a href="flashcards.html"> <i class="fa-solid fa-cards-blank"></i>       <span>Flashcards</span></a></li>
+            <li><a href="sessions.html">   <i class="fa-solid fa-clock-rotate-left"></i><span>Sessions</span></a></li>
+            <li><a href="metrics.html">    <i class="fa-solid fa-chart-line"></i>        <span>Metrics</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="#" onclick="logout()" class="quick-btn" style="display:flex;align-items:center;gap:0.85rem;padding:0.9rem 1rem;border-radius:10px;border:1px solid rgba(239,68,68,0.25);background:transparent;color:var(--danger);text-decoration:none;font-size:0.88rem;font-weight:500;">
+                <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="content-area">
+        <nav class="navbar">
+            <div class="nav-left">
+                <span class="page-display-title">Decks</span>
+                <div class="search-bar-wrapper">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="globalSearch" placeholder="Search decks…" oninput="filterDecks()">
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="nav-datetime"><span id="navDate"></span><span id="navClock" class="nav-clock"></span></div>
+                <div class="nav-actions">
+                    <button class="nav-btn" id="themeToggleBtn"><i class="fa-solid fa-moon"></i></button>
+                    <button class="nav-btn"><i class="fa-solid fa-bell"></i><span class="badge-dot"></span></button>
+                </div>
+                <div class="profile-avatar-wrapper">
+                    <div id="profileAvatar" class="avatar-img">AD</div>
+                    <div id="profileDropdown" class="profile-dropdown">
+                        <div class="profile-header-info"><div class="profile-username">Admin User</div><div class="profile-role">Administrator</div></div>
+                        <a href="dashboard.html" class="dropdown-link"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                        <a href="#" onclick="logout()" class="dropdown-link logout-action"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="decks-layout">
+                <!-- Form panel -->
+                <section class="glass-card form-panel">
+                    <div class="card-header-area">
+                        <h2 class="card-title-lg"><i class="fa-solid fa-plus" style="color:var(--accent)"></i> <span id="deckFormTitle">Add Deck</span></h2>
+                    </div>
+                    <form id="deckForm" onsubmit="saveDeck(event)">
+                        <input type="hidden" id="deckId">
+                        <div class="floating-form-group">
+                            <input class="floating-form-control" type="text" id="title" placeholder=" " required>
+                            <label class="floating-label">Title *</label>
+                        </div>
+                        <div class="floating-form-group">
+                            <input class="floating-form-control" type="text" id="description" placeholder=" " required>
+                            <label class="floating-label">Description *</label>
+                        </div>
+                        <div class="floating-form-group">
+                            <input class="floating-form-control" type="number" id="capacity" placeholder=" " required min="1">
+                            <label class="floating-label">Capacity *</label>
+                        </div>
+                        <div class="floating-form-group">
+                            <input class="floating-form-control" type="text" id="mentorName" placeholder=" " required>
+                            <label class="floating-label">Mentor Name *</label>
+                        </div>
+                        <div class="floating-form-group">
+                            <input class="floating-form-control" type="number" id="ownerId" placeholder=" " required min="1">
+                            <label class="floating-label">Owner ID *</label>
+                        </div>
+                        <div class="form-btn-row">
+                            <button type="submit" id="submitBtn" class="u-btn u-btn-primary">
+                                <i class="fa-solid fa-floppy-disk"></i> <span id="submitBtnText">Add Deck</span>
+                            </button>
+                            <button type="button" class="u-btn u-btn-ghost" onclick="resetDeckForm()">
+                                <i class="fa-solid fa-eraser"></i> Clear
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Table panel -->
+                <section class="glass-card">
+                    <div class="card-header-area">
+                        <h2 class="card-title-lg"><i class="fa-solid fa-layer-group" style="color:var(--primary)"></i> Language Decks</h2>
+                    </div>
+                    <div id="deckLoading" class="empty-state-card">
+                        <div class="skeleton" style="width:100%;height:1rem;margin-bottom:0.75rem">&nbsp;</div>
+                        <div class="skeleton" style="width:80%;height:1rem;margin-bottom:0.75rem">&nbsp;</div>
+                        <div class="skeleton" style="width:90%;height:1rem">&nbsp;</div>
+                    </div>
+                    <div id="deckEmpty" class="empty-state-card" style="display:none">
+                        <div class="empty-state-symbol">📚</div>
+                        <p class="empty-state-msg-title">No Decks Found</p>
+                        <p class="empty-state-msg-desc">Create your first language deck using the form.</p>
+                    </div>
+                    <div id="deckTableWrapper" style="display:none">
+                        <div class="responsive-table-container">
+                            <table>
+                                <thead>
+                                    <tr><th>ID</th><th>Title</th><th>Description</th><th>Capacity</th><th>Mentor</th><th>Owner</th><th>Actions</th></tr>
+                                </thead>
+                                <tbody id="deckTableBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="pagination-row" id="deckPagination"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="theme.js"></script>
+<script src="decks.js"></script>
+</body>
+</html>

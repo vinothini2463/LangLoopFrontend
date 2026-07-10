@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LangLoop | Register</title>
+
+<link rel="stylesheet" href="auth.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="login-image">
+
+        <img src="https://cdn-icons-png.flaticon.com/512/4202/4202843.png"
+             alt="Register">
+
+    </div>
+
+    <div class="login-box">
+
+        <h1>Create Account ✨</h1>
+
+        <p>Join LangLoop and start learning languages today.</p>
+
+        <form id="register-form">
+
+            <input
+                type="text"
+                id="username"
+                placeholder="Username"
+                required
+            >
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                required
+            >
+
+            <select id="role">
+
+                <option value="">Select Role</option>
+
+                <option value="LEARNER">Learner</option>
+
+                <option value="LINGUIST">Linguist</option>
+
+                <option value="ADMIN">Admin</option>
+
+            </select>
+
+            <div id="error" class="error"></div>
+
+            <button type="submit" id="registerBtn">
+
+                Register
+
+            </button>
+
+        </form>
+
+        <div class="links">
+
+            <a href="login.html">
+
+                Already have an account? Login
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="auth.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,311 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#6a11cb,#2575fc);
+    color:#333;
+}
+
+/* Header */
+
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 8%;
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(10px);
+    position:sticky;
+    top:0;
+}
+
+.logo{
+    font-size:30px;
+    font-weight:bold;
+    color:white;
+}
+
+nav a{
+    text-decoration:none;
+    color:white;
+    margin-left:20px;
+    font-size:17px;
+    transition:.3s;
+}
+
+nav a:hover{
+    color:yellow;
+}
+
+.register{
+    background:white;
+    color:#2575fc;
+    padding:10px 20px;
+    border-radius:25px;
+    font-weight:bold;
+}
+
+/* Hero */
+
+.hero{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:80px 8%;
+    min-height:85vh;
+}
+
+.left{
+    width:50%;
+}
+
+.left h1{
+    font-size:55px;
+    color:white;
+    margin-bottom:20px;
+}
+
+.left p{
+    color:white;
+    font-size:18px;
+    line-height:30px;
+    margin-bottom:30px;
+}
+
+.btn{
+    display:inline-block;
+    background:white;
+    color:#2575fc;
+    text-decoration:none;
+    padding:15px 35px;
+    border-radius:40px;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.btn:hover{
+    transform:scale(1.05);
+}
+
+.right img{
+    width:420px;
+    animation:float 4s infinite ease-in-out;
+}
+
+@keyframes float{
+
+0%{
+transform:translateY(0);
+}
+
+50%{
+transform:translateY(-15px);
+}
+
+100%{
+transform:translateY(0);
+}
+
+}
+
+/* About */
+
+#about{
+    padding:80px 8%;
+    text-align:center;
+    background:white;
+}
+
+#about h2{
+    font-size:38px;
+    color:#2575fc;
+    margin-bottom:20px;
+}
+
+#about p{
+    width:75%;
+    margin:auto;
+    font-size:18px;
+    line-height:30px;
+}
+
+/* Features */
+
+#features{
+    padding:80px 8%;
+}
+
+#features h2{
+    text-align:center;
+    color:white;
+    font-size:40px;
+    margin-bottom:40px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:25px;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:18px;
+    text-align:center;
+    transition:.3s;
+    box-shadow:0 10px 20px rgba(0,0,0,.2);
+}
+
+.card:hover{
+    transform:translateY(-10px);
+}
+
+.card h3{
+    margin:15px 0;
+    color:#2575fc;
+}
+
+/* Languages */
+
+.languages{
+    padding:80px 8%;
+    background:white;
+    text-align:center;
+}
+
+.languages h2{
+    color:#2575fc;
+    margin-bottom:30px;
+}
+
+.lang-box span{
+    display:inline-block;
+    margin:10px;
+    background:#2575fc;
+    color:white;
+    padding:12px 25px;
+    border-radius:30px;
+}
+
+/* Footer */
+
+footer{
+    background:#111827;
+    color:white;
+    text-align:center;
+    padding:30px;
+}
+
+/* Login & Register */
+
+.login-container{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px;
+}
+
+.login-box{
+    width:420px;
+    background:white;
+    padding:40px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+
+.login-box h1{
+    text-align:center;
+    color:#2575fc;
+    margin-bottom:10px;
+}
+
+.login-box p{
+    text-align:center;
+    margin-bottom:25px;
+    color:gray;
+}
+
+input,
+select{
+    width:100%;
+    padding:14px;
+    margin:12px 0;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:16px;
+}
+
+input:focus,
+select:focus{
+    outline:none;
+    border:2px solid #2575fc;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    background:#2575fc;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:17px;
+    cursor:pointer;
+    margin-top:15px;
+    transition:.3s;
+}
+
+button:hover{
+    background:#0f52d6;
+}
+
+.links{
+    text-align:center;
+    margin-top:20px;
+}
+
+.links a{
+    text-decoration:none;
+    color:#2575fc;
+    font-weight:bold;
+}
+
+.error{
+    color:red;
+    text-align:center;
+    margin-top:10px;
+}
+
+/* Responsive */
+
+@media(max-width:900px){
+
+.hero{
+flex-direction:column;
+text-align:center;
+}
+
+.left,
+.right{
+width:100%;
+}
+
+.right img{
+width:300px;
+margin-top:30px;
+}
+
+header{
+flex-direction:column;
+}
+
+nav{
+margin-top:20px;
+}
+
+}

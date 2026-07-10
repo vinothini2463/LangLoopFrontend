@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangLoop • Flashcards</title>
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="flashcards.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-container" id="appContainer">
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <a href="dashboard.html" class="logo-link"><span class="logo-emoji">🌍</span><span>LangLoop</span></a>
+            <button id="sidebarToggle" class="btn-sidebar-toggle"><i class="fa-solid fa-angles-left"></i></button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html">  <i class="fa-solid fa-gauge-high"></i>       <span>Dashboard</span></a></li>
+            <li><a href="users.html">      <i class="fa-solid fa-users"></i>             <span>Users</span></a></li>
+            <li><a href="decks.html">      <i class="fa-solid fa-layer-group"></i>       <span>Decks</span></a></li>
+            <li><a href="flashcards.html"> <i class="fa-solid fa-cards-blank"></i>       <span>Flashcards</span></a></li>
+            <li><a href="sessions.html">   <i class="fa-solid fa-clock-rotate-left"></i><span>Sessions</span></a></li>
+            <li><a href="metrics.html">    <i class="fa-solid fa-chart-line"></i>        <span>Metrics</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="#" onclick="logout()" class="quick-btn" style="display:flex;align-items:center;gap:0.85rem;padding:0.9rem 1rem;border-radius:10px;border:1px solid rgba(239,68,68,0.25);background:transparent;color:var(--danger);text-decoration:none;font-size:0.88rem;font-weight:500;">
+                <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="content-area">
+        <nav class="navbar">
+            <div class="nav-left">
+                <span class="page-display-title">Flashcards</span>
+                <div class="search-bar-wrapper">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="globalSearch" placeholder="Search cards…" oninput="filterCards()">
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="nav-datetime"><span id="navDate"></span><span id="navClock" class="nav-clock"></span></div>
+                <div class="nav-actions">
+                    <button class="nav-btn" id="themeToggleBtn"><i class="fa-solid fa-moon"></i></button>
+                    <button class="nav-btn"><i class="fa-solid fa-bell"></i><span class="badge-dot"></span></button>
+                </div>
+                <div class="profile-avatar-wrapper">
+                    <div id="profileAvatar" class="avatar-img">AD</div>
+                    <div id="profileDropdown" class="profile-dropdown">
+                        <div class="profile-header-info"><div class="profile-username">Admin User</div><div class="profile-role">Administrator</div></div>
+                        <a href="dashboard.html" class="dropdown-link"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                        <a href="#" onclick="logout()" class="dropdown-link logout-action"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <!-- Controls bar -->
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+                <div>
+                    <h1 style="font-size:1.75rem;font-weight:700;color:var(--text-primary)">Flashcards</h1>
+                    <p style="color:var(--text-muted);font-size:0.88rem">Click any card to flip and reveal the answer</p>
+                </div>
+                <div style="display:flex;gap:0.75rem;align-items:center">
+                    <input type="number" id="deckFilter" placeholder="Filter by Deck ID" class="filter-input" oninput="filterCards()">
+                    <button class="u-btn u-btn-primary" onclick="openCardForm()">
+                        <i class="fa-solid fa-plus"></i> Add Card
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card grid -->
+            <div id="cardsLoading" style="text-align:center;padding:4rem;color:var(--text-muted)">
+                <div class="skeleton" style="width:200px;height:180px;border-radius:16px;margin:auto">&nbsp;</div>
+            </div>
+            <div id="cardsEmpty" class="glass-card empty-state-card" style="display:none">
+                <div class="empty-state-symbol">🃏</div>
+                <p class="empty-state-msg-title">No Flashcards Yet</p>
+                <p class="empty-state-msg-desc">Click "Add Card" to create your first flashcard.</p>
+                <button class="u-btn u-btn-primary" style="margin-top:1.5rem" onclick="openCardForm()"><i class="fa-solid fa-plus"></i> Add Card</button>
+            </div>
+            <div id="cardsGrid" class="cards-grid" style="display:none"></div>
+        </main>
+    </div>
+</div>
+
+<!-- Card Form Modal -->
+<div id="cardFormModal" class="modal-overlay">
+    <div class="confirm-modal-box" style="max-width:500px;text-align:left">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+            <h3 class="modal-title" style="margin:0" id="cardFormModalTitle">Add Flashcard</h3>
+            <button onclick="closeCardForm()" style="background:none;border:none;color:var(--text-muted);font-size:1.25rem;cursor:pointer">&times;</button>
+        </div>
+        <input type="hidden" id="cardId">
+        <div class="floating-form-group" style="position:relative;margin-bottom:1.25rem">
+            <input class="floating-form-control" type="text" id="frontContent" placeholder=" " required
+                style="width:100%;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:0.85rem 1rem 0.5rem;color:var(--text-primary);font-family:var(--font-family);font-size:0.9rem">
+            <label class="floating-label">Front (Question) *</label>
+        </div>
+        <div class="floating-form-group" style="position:relative;margin-bottom:1.25rem">
+            <input class="floating-form-control" type="text" id="backContent" placeholder=" " required
+                style="width:100%;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:0.85rem 1rem 0.5rem;color:var(--text-primary);font-family:var(--font-family);font-size:0.9rem">
+            <label class="floating-label">Back (Answer) *</label>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.5rem">
+            <div style="position:relative">
+                <input class="floating-form-control" type="number" id="orderIndex" placeholder=" " min="0"
+                    style="width:100%;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:0.85rem 1rem 0.5rem;color:var(--text-primary);font-family:var(--font-family);font-size:0.9rem">
+                <label class="floating-label">Order Index</label>
+            </div>
+            <div style="position:relative">
+                <input class="floating-form-control" type="number" id="deckId" placeholder=" " min="1"
+                    style="width:100%;background:var(--bg-input);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:0.85rem 1rem 0.5rem;color:var(--text-primary);font-family:var(--font-family);font-size:0.9rem">
+                <label class="floating-label">Deck ID *</label>
+            </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+            <button class="u-btn u-btn-primary" onclick="saveCard()"><i class="fa-solid fa-floppy-disk"></i> Save Card</button>
+            <button class="u-btn u-btn-ghost" onclick="closeCardForm()"><i class="fa-solid fa-times"></i> Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script src="theme.js"></script>
+<script src="flashcards.js"></script>
+</body>
+</html>

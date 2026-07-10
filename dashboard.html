@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangLoop • Dashboard</title>
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* Dashboard-specific styles */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(16px);
+            transition: var(--transition);
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow);
+        }
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 3px;
+        }
+        .stat-card.indigo::after { background: linear-gradient(90deg, var(--primary), var(--secondary)); }
+        .stat-card.cyan::after   { background: linear-gradient(90deg, var(--accent), var(--primary)); }
+        .stat-card.green::after  { background: linear-gradient(90deg, var(--success), var(--accent)); }
+        .stat-card.purple::after { background: linear-gradient(90deg, var(--secondary), var(--primary)); }
+        .stat-icon {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        .stat-card.indigo .stat-icon { background: rgba(79,70,229,0.15); color: #818CF8; }
+        .stat-card.cyan   .stat-icon { background: rgba(6,182,212,0.15);  color: var(--accent); }
+        .stat-card.green  .stat-icon { background: rgba(16,185,129,0.15); color: var(--success); }
+        .stat-card.purple .stat-icon { background: rgba(124,58,237,0.15); color: #A78BFA; }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 0.35rem;
+        }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-skeleton .stat-value { width: 60%; height: 2rem; }
+        .stat-skeleton .stat-label { width: 80%; height: 0.8rem; margin-top: 0.5rem; }
+
+        /* Charts grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        .chart-wrapper canvas {
+            width: 100% !important;
+            max-height: 240px;
+        }
+
+        /* Dashboard two-column bottom */
+        .dashboard-bottom {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 1.5rem;
+        }
+
+        /* Activity list */
+        .activity-list { display: flex; flex-direction: column; gap: 0; }
+        .activity-item {
+            display: flex; align-items: center; gap: 1rem;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-dot {
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; flex-shrink: 0;
+        }
+        .activity-info { flex-grow: 1; }
+        .activity-title { font-size: 0.85rem; font-weight: 500; color: var(--text-primary); }
+        .activity-time  { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* Quick actions */
+        .quick-actions { display: flex; flex-direction: column; gap: 0.75rem; }
+        .quick-btn {
+            display: flex; align-items: center; gap: 0.85rem;
+            padding: 0.9rem 1.1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        .quick-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary-glow);
+            color: var(--text-primary);
+        }
+        .quick-btn i { font-size: 1rem; width: 20px; }
+
+        /* Page header */
+        .page-intro { margin-bottom: 0; }
+        .page-intro h1 { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem; }
+        .page-intro p  { font-size: 0.88rem; color: var(--text-muted); }
+
+        /* Insight bar */
+        .insight-bar {
+            display: flex; align-items: center; gap: 0.75rem;
+            background: linear-gradient(135deg, rgba(79,70,229,0.12), rgba(6,182,212,0.08));
+            border: 1px solid rgba(79,70,229,0.2);
+            border-radius: var(--radius-md);
+            padding: 0.85rem 1.25rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .insight-bar i { color: var(--accent); }
+        .insight-bar strong { color: var(--text-primary); }
+
+        @media(max-width:1100px) {
+            .stats-grid { grid-template-columns: repeat(2,1fr); }
+            .charts-grid { grid-template-columns: 1fr; }
+            .dashboard-bottom { grid-template-columns: 1fr; }
+        }
+        @media(max-width:640px) {
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container" id="appContainer">
+
+    <!-- ── SIDEBAR ── -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <a href="dashboard.html" class="logo-link">
+                <span class="logo-emoji">🌍</span>
+                <span>LangLoop</span>
+            </a>
+            <button id="sidebarToggle" class="btn-sidebar-toggle" title="Collapse sidebar">
+                <i class="fa-solid fa-angles-left"></i>
+            </button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html">  <i class="fa-solid fa-gauge-high"></i>  <span>Dashboard</span></a></li>
+            <li><a href="users.html">      <i class="fa-solid fa-users"></i>        <span>Users</span></a></li>
+            <li><a href="decks.html">      <i class="fa-solid fa-layer-group"></i>  <span>Decks</span></a></li>
+            <li><a href="flashcards.html"> <i class="fa-solid fa-cards-blank"></i>  <span>Flashcards</span></a></li>
+            <li><a href="sessions.html">   <i class="fa-solid fa-clock-rotate-left"></i><span>Sessions</span></a></li>
+            <li><a href="metrics.html">    <i class="fa-solid fa-chart-line"></i>   <span>Metrics</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="#" onclick="logout()" class="quick-btn" style="color:var(--danger);border-color:rgba(239,68,68,0.25);">
+                <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ── CONTENT ── -->
+    <div class="content-area">
+
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="nav-left">
+                <button id="mobileSidebarBtn" class="nav-btn" style="display:none;"><i class="fa-solid fa-bars"></i></button>
+                <span class="page-display-title">Dashboard</span>
+            </div>
+            <div class="nav-right">
+                <div class="nav-datetime">
+                    <span id="navDate"></span>
+                    <span id="navClock" class="nav-clock"></span>
+                </div>
+                <div class="nav-actions">
+                    <button class="nav-btn" id="themeToggleBtn" title="Toggle theme"><i class="fa-solid fa-moon"></i></button>
+                    <button class="nav-btn" title="Notifications"><i class="fa-solid fa-bell"></i><span class="badge-dot"></span></button>
+                </div>
+                <div class="profile-avatar-wrapper">
+                    <div id="profileAvatar" class="avatar-img" title="Profile">AD</div>
+                    <div id="profileDropdown" class="profile-dropdown">
+                        <div class="profile-header-info">
+                            <div class="profile-username">Admin User</div>
+                            <div class="profile-role">Administrator</div>
+                        </div>
+                        <a href="dashboard.html" class="dropdown-link"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                        <a href="#" onclick="logout()" class="dropdown-link logout-action"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <main class="main-content">
+
+            <!-- Page intro -->
+            <div class="page-intro">
+                <h1>Good Morning 👋</h1>
+                <p>Here's what's happening with your language learning platform today.</p>
+            </div>
+
+            <!-- Learning insight banner -->
+            <div class="insight-bar">
+                <i class="fa-solid fa-lightbulb"></i>
+                <span>Learning insight: <strong>Spaced repetition</strong> with intervals of 7–14 days yields up to 90% long-term retention.</span>
+            </div>
+
+            <!-- Stats cards -->
+            <section class="stats-grid" id="statsGrid">
+                <!-- Skeletons while loading -->
+                <div class="stat-card indigo stat-skeleton">
+                    <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                    <div class="stat-value skeleton" style="width:60%;height:2rem;">&nbsp;</div>
+                    <div class="stat-label skeleton" style="width:80%;height:0.8rem;margin-top:0.5rem;">&nbsp;</div>
+                </div>
+                <div class="stat-card cyan stat-skeleton">
+                    <div class="stat-icon"><i class="fa-solid fa-layer-group"></i></div>
+                    <div class="stat-value skeleton" style="width:60%;height:2rem;">&nbsp;</div>
+                    <div class="stat-label skeleton" style="width:80%;height:0.8rem;margin-top:0.5rem;">&nbsp;</div>
+                </div>
+                <div class="stat-card green stat-skeleton">
+                    <div class="stat-icon"><i class="fa-solid fa-cards-blank"></i></div>
+                    <div class="stat-value skeleton" style="width:60%;height:2rem;">&nbsp;</div>
+                    <div class="stat-label skeleton" style="width:80%;height:0.8rem;margin-top:0.5rem;">&nbsp;</div>
+                </div>
+                <div class="stat-card purple stat-skeleton">
+                    <div class="stat-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                    <div class="stat-value skeleton" style="width:60%;height:2rem;">&nbsp;</div>
+                    <div class="stat-label skeleton" style="width:80%;height:0.8rem;margin-top:0.5rem;">&nbsp;</div>
+                </div>
+            </section>
+
+            <!-- Charts row -->
+            <section class="charts-grid">
+                <div class="glass-card">
+                    <div class="card-header-area">
+                        <h2 class="card-title-lg"><i class="fa-solid fa-chart-line" style="color:var(--accent)"></i> Sessions Over Time</h2>
+                    </div>
+                    <div class="chart-wrapper"><canvas id="lineChart"></canvas></div>
+                </div>
+                <div class="glass-card">
+                    <div class="card-header-area">
+                        <h2 class="card-title-lg"><i class="fa-solid fa-chart-bar" style="color:var(--secondary)"></i> Avg Score by Deck</h2>
+                    </div>
+                    <div class="chart-wrapper"><canvas id="barChart"></canvas></div>
+                </div>
+            </section>
+
+            <!-- Bottom row: Activity + Quick Actions -->
+            <section class="dashboard-bottom">
+                <div class="glass-card">
+                    <div class="card-header-area">
+                        <h2 class="card-title-lg"><i class="fa-solid fa-bolt" style="color:var(--warning)"></i> Recent Activity</h2>
+                    </div>
+                    <div class="activity-list" id="activityList">
+                        <div style="padding:3rem;text-align:center;color:var(--text-muted);">
+                            <div class="skeleton" style="width:100%;height:1rem;margin-bottom:0.75rem;">&nbsp;</div>
+                            <div class="skeleton" style="width:80%;height:1rem;margin-bottom:0.75rem;">&nbsp;</div>
+                            <div class="skeleton" style="width:90%;height:1rem;">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <div class="card-header-area">
+                        <h2 class="card-title-lg"><i class="fa-solid fa-zap" style="color:var(--primary)"></i> Quick Actions</h2>
+                    </div>
+                    <div class="quick-actions">
+                        <a href="users.html" class="quick-btn"><i class="fa-solid fa-user-plus"></i><span>Manage Users</span></a>
+                        <a href="decks.html" class="quick-btn"><i class="fa-solid fa-plus"></i><span>Create New Deck</span></a>
+                        <a href="flashcards.html" class="quick-btn"><i class="fa-solid fa-cards-blank"></i><span>Add Flashcard</span></a>
+                        <a href="sessions.html" class="quick-btn"><i class="fa-solid fa-clock"></i><span>Log Study Session</span></a>
+                        <a href="metrics.html" class="quick-btn"><i class="fa-solid fa-chart-pie"></i><span>View Analytics</span></a>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<script src="theme.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

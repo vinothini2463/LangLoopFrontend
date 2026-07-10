@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangLoop • Users</title>
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="users.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<div class="app-container" id="appContainer">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <a href="dashboard.html" class="logo-link"><span class="logo-emoji">🌍</span><span>LangLoop</span></a>
+            <button id="sidebarToggle" class="btn-sidebar-toggle"><i class="fa-solid fa-angles-left"></i></button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html">  <i class="fa-solid fa-gauge-high"></i>       <span>Dashboard</span></a></li>
+            <li><a href="users.html">      <i class="fa-solid fa-users"></i>             <span>Users</span></a></li>
+            <li><a href="decks.html">      <i class="fa-solid fa-layer-group"></i>       <span>Decks</span></a></li>
+            <li><a href="flashcards.html"> <i class="fa-solid fa-cards-blank"></i>       <span>Flashcards</span></a></li>
+            <li><a href="sessions.html">   <i class="fa-solid fa-clock-rotate-left"></i><span>Sessions</span></a></li>
+            <li><a href="metrics.html">    <i class="fa-solid fa-chart-line"></i>        <span>Metrics</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="#" onclick="logout()" class="quick-btn" style="display:flex;align-items:center;gap:0.85rem;padding:0.9rem 1rem;border-radius:10px;border:1px solid rgba(239,68,68,0.25);background:transparent;color:var(--danger);text-decoration:none;font-size:0.88rem;font-weight:500;">
+                <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <div class="content-area">
+        <nav class="navbar">
+            <div class="nav-left">
+                <span class="page-display-title">Users</span>
+                <div class="search-bar-wrapper">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="globalSearch" placeholder="Search users…" oninput="filterUsers()">
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="nav-datetime"><span id="navDate"></span><span id="navClock" class="nav-clock"></span></div>
+                <div class="nav-actions">
+                    <button class="nav-btn" id="themeToggleBtn"><i class="fa-solid fa-moon"></i></button>
+                    <button class="nav-btn"><i class="fa-solid fa-bell"></i><span class="badge-dot"></span></button>
+                </div>
+                <div class="profile-avatar-wrapper">
+                    <div id="profileAvatar" class="avatar-img">AD</div>
+                    <div id="profileDropdown" class="profile-dropdown">
+                        <div class="profile-header-info"><div class="profile-username">Admin User</div><div class="profile-role">Administrator</div></div>
+                        <a href="dashboard.html" class="dropdown-link"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                        <a href="#" onclick="logout()" class="dropdown-link logout-action"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="users-layout">
+
+                <!-- Form Panel -->
+                <section class="glass-card form-panel">
+                    <div class="card-header-area">
+                        <h2 class="card-title-lg"><i class="fa-solid fa-user-plus" style="color:var(--accent)"></i> <span id="formTitle">Add User</span></h2>
+                    </div>
+                    <form id="userForm" onsubmit="event.preventDefault()">
+                        <input type="hidden" id="userId">
+                        <div class="floating-form-group">
+                            <input class="floating-form-control" type="text" id="username" placeholder=" " required>
+                            <label class="floating-label">Username *</label>
+                        </div>
+                        <div class="floating-form-group">
+                            <input class="floating-form-control" type="password" id="password" placeholder=" " required>
+                            <label class="floating-label">Password *</label>
+                        </div>
+                        <div class="floating-form-group">
+                            <select class="floating-form-control" id="role" required>
+                                <option value="">Select Role</option>
+                                <option value="ADMIN">ADMIN</option>
+                                <option value="LEARNER">LEARNER</option>
+                                <option value="LINGUIST">LINGUIST</option>
+                            </select>
+                            <label class="floating-label" style="top:15px;font-size:0.72rem;color:var(--accent)">Role *</label>
+                        </div>
+                        <div class="form-btn-row">
+                            <button type="button" class="u-btn u-btn-primary" onclick="saveUser()">
+                                <i class="fa-solid fa-floppy-disk"></i> Save
+                            </button>
+                            <button type="button" class="u-btn u-btn-ghost" onclick="clearForm()">
+                                <i class="fa-solid fa-eraser"></i> Clear
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Table Panel -->
+                <section class="glass-card">
+                    <div class="card-header-area">
+                        <h2 class="card-title-lg"><i class="fa-solid fa-users" style="color:var(--primary)"></i> All Users</h2>
+                        <div style="display:flex;gap:0.75rem;align-items:center">
+                            <select id="roleFilter" class="filter-select" onchange="filterUsers()">
+                                <option value="">All Roles</option>
+                                <option value="ADMIN">Admin</option>
+                                <option value="LEARNER">Learner</option>
+                                <option value="LINGUIST">Linguist</option>
+                            </select>
+                            <select id="sortBy" class="filter-select" onchange="filterUsers()">
+                                <option value="id">Sort: ID</option>
+                                <option value="username">Sort: Name</option>
+                                <option value="role">Sort: Role</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="loadingState" class="empty-state-card">
+                        <div class="skeleton" style="width:100%;height:1rem;margin-bottom:0.75rem">&nbsp;</div>
+                        <div class="skeleton" style="width:80%;height:1rem;margin-bottom:0.75rem">&nbsp;</div>
+                        <div class="skeleton" style="width:90%;height:1rem">&nbsp;</div>
+                    </div>
+                    <div id="emptyState" class="empty-state-card" style="display:none">
+                        <div class="empty-state-symbol">👤</div>
+                        <p class="empty-state-msg-title">No Users Found</p>
+                        <p class="empty-state-msg-desc">Add the first user using the form.</p>
+                    </div>
+                    <div id="tableWrapper" style="display:none">
+                        <div class="responsive-table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th><th>Username</th><th>Role</th><th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="pagination-row" id="paginationRow"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</div>
+<script src="theme.js"></script>
+<script src="users.js"></script>
+</body>
+</html>
