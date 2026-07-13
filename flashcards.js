@@ -10,6 +10,7 @@ let allCards  = [];
 let filteredC = [];
 
 /* ── API helper ─────────────────────────── */
+const BASE_URL = "https://fullstackbackend-88h0.onrender.com";
 async function apiCall(path, method = "GET", body = null) {
     const opts = {
         method,
