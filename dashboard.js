@@ -13,6 +13,7 @@
  */
 
 /* ── helpers ─────────────────────────────── */
+const BASE_URL = "https://fullstackbackend-88h0.onrender.com";
 async function apiGet(path) {
     const res = await fetch(BASE_URL + path, {
         headers: { "Content-Type": "application/json" }
